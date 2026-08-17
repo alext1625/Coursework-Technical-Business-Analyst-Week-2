@@ -76,3 +76,79 @@ Following these ADKAR assessments, the following risks were identified, alongsid
 - **Risk:** When a customer transitions from the portal to an agent due to case complexity, the agent receives no portal history, forcing the customer to repeat themselves, and increasing handling time.
 - **Mitigation Action:** Build an "Agent Context Card" within the routing logic. When a case escalates, the agent automatically receives a summary of the customer's portal activity, selected options, and triggered risk flags before taking the call, giving them a better understanding of the case before-hand.
 
+---
+
+## Phase 1 Scope Definition 
+
+The following section defines the scope of Phase 1, including what is in-scope and out-of-scope for the initial implementation, based on the previous ROI ranking and ADKAR risks.
+
+--- 
+
+### In-Scope
+
+The following features have been identified as in-scope for Phase 1, in order to establish automation for straightforward cases, and to provide operational oversight for managers and team leaders:
+
+#### Identity Verification 
+- **Description:** Frictionless SMS/email two-factor authentication link system that verifies customers without requiring account numbers or manual intervention.
+- **Justification:** Improves financial value by eliminating authentication drop-offs. By tying verification to mobile numbers as opposed to old account credentials, this feature mitigates the Customer Ability Risk, preventing increasing call volumes.
+
+#### Account Summary & Eligible Actions:
+- **Description:** Read-only dashboard showing account summary including total balance, overdue arrears, payment due date, etc.
+- **Justification:** ROI calculations show this feature will result in a net benefit of £1.29M, with a projected 12-day payback period, cutting average handling time by 8 minutes per straightforward case. Inclusion of simple terminology also mitigates Customer Knowledge Risk.
+
+#### Digital Promise-to-Pay Capture:
+- **Description:** Allow customer selection of a payment date within an approved 30-day window, alongside instant digital receipt confirmation and automated SLA callback countdown timers.
+- **Justification:** ROI calculations show this feature will result in a net benefit of £2.86M. Automates manual note-taking and callback scheduling, mitigating Agent Desire and Reinforcement Risks. Digital receipts also mitigate Customer Reinforcement Risk.
+
+#### Rules-Based Routing to Agents:
+- **Description:** Automatically detects vulnerability, hardship, or dispute triggers and routes them to the relevant specialist agent queues.
+- **Justification:** ROI calculations show this feature will result in a net benefit of £583k. Protects agent capacity by ensuring vulnerable, hardship, or disputed accounts are immediately triaged away from self-service flows to specialist human teams, mitigating Agent Desire and Knowledge Risks.
+
+#### Agent Context Card:
+- **Description:** Automated summary that is sent to an agent when a customer escalates out of the portal, displaying customer portal actions, selected options, and triggered risk flags.
+- **Justification:** Reduces agent handling time when cases are escalated from the portal, mitigating Agent Desire and Knowledge Risks. 
+
+#### Portal Outcome Reporting & Audit Trail:
+- **Description:** Full audit logging of all portal interactions, alongside a real-time queue status dashboard for managers to assess portal performance and team activity.
+- **Justification:** Governance layer that protects against regulatory compliance audit failures. Mitigates the Manager Ability risk by replacing blind spots with real-time dashboards.
+
+---
+
+### Out-of-Scope
+
+The following features have been excluded from the Phase 1 scope, in order to maintain delivery discipline and eliminate execution risk: 
+
+#### Eligible Payment Plan Selection
+- **Description:** Multi-month repayment schedule calculations, dynamic interest recalculation rules, and live payment gateway interactions.
+- **Justification:** Despite offering high upside, requires dynamic interest recalculation rules, affordability assessment algorithms, and complex payment gateway integrations. Customers can't safely execute legally binding debt schedules until identity verification and screening rules are proven stable in production. Deferring this avoids delivery bottlenecks and eliminates compliance risks.
+
+#### Hardship Assessment and Repayment Negotiation
+- **Description:** Automated self-resolution of financial distress of legal dispute cases.
+- **Justification:** High regulatory and ethical risk. Vulnerable customers and complex disputes should be redirected directly to human specialist agents, and attempting to automate this creates severe compliance risks.
+
+#### Self-Serve Contact Detail Updates
+- **Description:** Self-serve update of address and phone details.
+- **Justification:** ROI calculations show this feature will result in a lower net benefit of £289k compared to other features listed above. Requires secondary verification workflows, and represents a secondary administrative efficiency that can remain in the backlog without impacting Phase 1 ROI.
+
+#### Live Payment Processing
+- **Description:** Live debit/credit card settlement engines.
+- **Justification:** Ensuring compliance and third-party merchant processor integration add significant security testing overhead. Digital promise-to-pay capture already captures the majority of operational value without the security complexity of handling live card transactions.
+
+#### Major Core Platform Replacement 
+- **Description:** Modernising, refactoring, or replacing the underlying legacy database.
+- **Justification:** High risk and significant resource requirement. Modernising or replacing the core platform introduces potential downtime, data migration challenges, and extensive testing needs. Deferring this ensures Phase 1 delivery focus and mitigates operational risks.
+
+---  
+
+## Deliverable Planning
+
+The following section outlines the deliverables for Phase 1, including predicted timelines, estimated time required and potential blockers, as well as any required justifications. 
+
+| Deliverable | Predicted Completion Day | Estimated Time Required | Potential Blockers | Justification |
+| :--- | :--- | :---: | :--- | :--- |
+| ADKAR Assessments | Day 1 | 2-3 hours | Aligning risks with operational incentives | Somewhat familiar and straightforward process. |
+| Phase 1 Scope Definition | Day 1 | 3-4 hours | Pushback from stakeholders | Requires careful consideration of ROI, ADKAR risks, and stakeholder input. | 
+| To-Be Process Mapping | Day 2 | 4-6 hours | Unfamiliar concept | Requires input from multiple stakeholders and consideration of current processes, as well as work from last week. |
+| Jira Backlog Creation | Day 3 | 6-8 hours | Unfamiliar concept and technology | Requires careful consideration of user needs, and referral to high-level discovery. |
+| Rapid Prototyping | Day 4 | 6-8 hours | Unfamiliar concept | Requires careful consideration of customer journey, and alignment with backlog requirements. |
+| Slide Deck Creation | Day 5 | 4-6 hours | Unfamiliar concept | Requires careful consideration of compliance, and preparation of defensive arguments for any potential pushback or scrutiny. |
