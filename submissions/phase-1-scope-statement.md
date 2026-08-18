@@ -100,8 +100,8 @@ The following features have been identified as in-scope for Phase 1, in order to
 - **Description:** Allow customer selection of a payment date within an approved 30-day window, alongside instant digital receipt confirmation and automated SLA callback countdown timers.
 - **Justification:** ROI calculations show this feature will result in a net benefit of £2.86M. Automates manual note-taking and callback scheduling, mitigating Agent Desire and Reinforcement Risks. Digital receipts also mitigate Customer Reinforcement Risk.
 
-#### Rules-Based Routing to Agents:
-- **Description:** Automatically detects vulnerability, hardship, or dispute triggers and routes them to the relevant specialist agent queues.
+#### Keyword-Based Routing to Agents:
+- **Description:** Uses a simplified keyword/self-identification approach to detect vulnerability, hardship, or dispute triggers and routes them to the relevant specialist agent queues. This is then followed by a short manual review of unflagged cases, for compliance reasons.
 - **Justification:** ROI calculations show this feature will result in a net benefit of £583k. Protects agent capacity by ensuring vulnerable, hardship, or disputed accounts are immediately triaged away from self-service flows to specialist human teams, mitigating Agent Desire and Knowledge Risks.
 
 #### Agent Context Card:
@@ -140,6 +140,27 @@ The following features have been excluded from the Phase 1 scope, in order to ma
 
 ---  
 
+### Dependencies and Ownership
+
+To ensure realistic delivery estimation and avoid mid-sprint blockers, every Phase 1 feature/capability has been mapped to its underlying technical dependencies/external system integrations, and owners.
+
+| Feature / Capability | Technical Dependency / System Integration | Owner |
+| :--- | :--- | :---: |
+| Identity Verification (SMS/Email 2FA links) | Third-Party Telephony API, central customer contact database | SecOps and Central Infrastructure Team |
+| Self-Serve Account Summary | Read-Only Database Connector | Legacy Platform Maintenance Team |
+| Digital Promise-to-Pay Capture | SLA Timer Engine to monitor P2P dates and trigger alerts | Product Engineering and Collections Ops |
+| Keyword-Based Case Screening | Keyword Dictionary and Manual queue setup | Compliance Team and Gareth Evans |
+| Agent Context Card | Bi-Directional Database Write-Back, API event triggers into legacy database to attach portal session notes to agent ticket | Core Systems IT Team, Gareth Evans |
+| Portal Outcome Reporting and Audit Trail | Event Logger and Dashboard | Data Analytics and Business Intelligence team  |
+
+### Trade-offs Accepted
+
+**Rules-Based Case Routing** was changed from an automated approach based on defined parameters to a simpler, key-word flagging system. After speaking to Gareth about the current case complexity definition parameters, he mentioned that they exist but are heavily inconsistent, and flagged that they currently result in approximately a 60% capture rate, which is a major compliance issue. This would mean that new parameters would have to be defined from scratch, which would significantly increase the size and dependencies of the Phase 1 scope. 
+
+As a result of this, a simpler, key-word based flagging approach, followed by a manual checking of non-flagged cases will be adopted for Phase 1, with full automation and defined parameters being deferred to Phase 2. 
+
+---
+
 ## Deliverable Planning
 
 The following section outlines the deliverables for Phase 1, including predicted timelines, estimated time required and potential blockers, as well as any required justifications. 
@@ -147,8 +168,8 @@ The following section outlines the deliverables for Phase 1, including predicted
 | Deliverable | Predicted Completion Day | Estimated Time Required | Potential Blockers | Justification |
 | :--- | :--- | :---: | :--- | :--- |
 | ADKAR Assessments | Day 1 | 2-3 hours | Aligning risks with operational incentives | Somewhat familiar and straightforward process. |
-| Phase 1 Scope Definition | Day 1 | 3-4 hours | Pushback from stakeholders | Requires careful consideration of ROI, ADKAR risks, and stakeholder input. | 
+| Phase 1 Scope Definition | Day 1 | 3-4 hours | Push-back from stakeholders | Requires careful consideration of ROI, ADKAR risks, and stakeholder input. | 
 | To-Be Process Mapping | Day 2 | 4-6 hours | Unfamiliar concept | Requires input from multiple stakeholders and consideration of current processes, as well as work from last week. |
 | Jira Backlog Creation | Day 3 | 6-8 hours | Unfamiliar concept and technology | Requires careful consideration of user needs, and referral to high-level discovery. |
 | Rapid Prototyping | Day 4 | 6-8 hours | Unfamiliar concept | Requires careful consideration of customer journey, and alignment with backlog requirements. |
-| Slide Deck Creation | Day 5 | 4-6 hours | Unfamiliar concept | Requires careful consideration of compliance, and preparation of defensive arguments for any potential pushback or scrutiny. |
+| Slide Deck Creation | Day 5 | 4-6 hours | Unfamiliar concept | Requires careful consideration of compliance, and preparation of defensive arguments for any potential push-back or scrutiny. |
