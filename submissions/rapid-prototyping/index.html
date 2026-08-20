@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legacy Trust Bank | Smart Recovery Portal Prototype</title>
+<style>
+  :root {
+    --color-primary: #0b3d5c;
+    --color-primary-dark: #072a40;
+    --color-primary-light: #e8f0f5;
+    --color-accent: #0e7c66;
+    --color-accent-light: #e3f4ef;
+    --color-danger: #b3261e;
+    --color-danger-light: #fbeceb;
+    --color-bg: #f2f5f7;
+    --color-card: #ffffff;
+    --color-text: #172733;
+    --color-muted: #56707d;
+    --color-border: #dde5ea;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --shadow-card: 0 2px 10px rgba(11, 61, 92, 0.08);
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1 {
+    font-size: 1.35rem;
+    margin: 0 0 0.35rem;
+    color: var(--color-primary-dark);
+  }
+
+  p { margin: 0 0 1rem; }
+
+  .muted { color: var(--color-muted); font-size: 0.92rem; }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    margin: 0 0 0.4rem;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    background: var(--color-primary);
+    color: #fff;
+    padding: 0.85rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .topbar-inner {
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .brand { display: flex; align-items: center; gap: 0.6rem; }
+
+  .brand-logo {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+  }
+
+  .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
+  .brand-text strong { font-size: 0.98rem; }
+  .brand-text span { font-size: 0.72rem; color: #cfe0ea; }
+
+  .security-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+
+  .security-badge svg { width: 13px; height: 13px; }
+
+  /* ---------- Layout ---------- */
+  .app-shell {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 1.25rem 1rem 3rem;
+  }
+
+  .screen { display: none; animation: fade-in 0.25s ease; }
+  .screen.is-active { display: block; }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-border);
+    padding: 1.5rem;
+  }
+
+  .card-center { text-align: center; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.8rem 1.1rem;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.06s ease, box-shadow 0.15s ease, background 0.15s ease;
+    font-family: inherit;
+  }
+
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 3px solid #7fb6e6; outline-offset: 2px; }
+
+  .btn-block { width: 100%; margin-top: 0.5rem; }
+
+  .btn-primary { background: var(--color-primary); color: #fff; }
+  .btn-primary:hover { background: var(--color-primary-dark); }
+
+  .btn-secondary {
+    background: #fff;
+    color: var(--color-primary);
+    border: 1.5px solid var(--color-primary);
+  }
+  .btn-secondary:hover { background: var(--color-primary-light); }
+
+  /* ---------- Landing screen ---------- */
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-primary-light);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+
+  .info-label { color: var(--color-muted); }
+  .info-value { font-weight: 700; color: var(--color-primary-dark); }
+
+  .fine-print { font-size: 0.75rem; color: var(--color-muted); margin-top: 1rem; margin-bottom: 0; }
+
+  /* ---------- OTP ---------- */
+  .otp-group {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin: 1.25rem 0 0.85rem;
+  }
+
+  .otp-box {
+    width: 44px;
+    height: 52px;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--color-border);
+    color: var(--color-primary-dark);
+  }
+
+  .otp-box:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+  }
+
+  .otp-group.shake { animation: shake 0.4s ease; }
+
+  @keyframes shake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(4px); }
+    30%, 50%, 70% { transform: translateX(-8px); }
+    40%, 60% { transform: translateX(8px); }
+  }
+
+  .otp-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .timer strong { color: var(--color-primary-dark); }
+
+  .badge {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .badge-neutral { background: var(--color-primary-light); color: var(--color-primary-dark); }
+  .badge-danger { background: var(--color-danger-light); color: var(--color-danger); }
+
+  .error-text {
+    background: var(--color-danger-light);
+    color: var(--color-danger);
+    border-radius: var(--radius-md);
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+    margin: 0 0 0.85rem;
+  }
+
+  /* ---------- Account summary ---------- */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+
+  .stat {
+    background: var(--color-primary-light);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .stat.stat-danger { background: var(--color-danger-light); }
+  .stat.stat-danger .stat-value { color: var(--color-danger); }
+  .stat:nth-child(3) { grid-column: 1 / -1; }
+
+  .stat-label { font-size: 0.75rem; color: var(--color-muted); }
+  .stat-value { font-size: 1.1rem; font-weight: 700; color: var(--color-primary-dark); }
+
+  .accordion {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.6rem 0.9rem;
+    margin: 0.5rem 0 1.25rem;
+  }
+
+  .accordion summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-primary);
+    list-style: none;
+  }
+  .accordion summary::-webkit-details-marker { display: none; }
+  .accordion summary::after { content: " ▾"; }
+  .accordion[open] summary::after { content: " ▴"; }
+
+  .breakdown-list { margin: 0.85rem 0 0; display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.88rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed var(--color-border);
+  }
+
+  .breakdown-item.total { font-weight: 700; border-bottom: none; padding-top: 0.15rem; }
+
+  .breakdown-item dt { font-weight: 500; }
+  .breakdown-item dd { margin: 0; font-weight: 600; }
+
+  .tooltip {
+    cursor: help;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+    border-bottom: 1px dotted var(--color-muted);
+  }
+
+  /* ---------- Action cards ---------- */
+  .action-cards { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+
+  .action-card {
+    text-align: left;
+    background: #fff;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1rem;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .action-card:hover { border-color: var(--color-primary); background: var(--color-primary-light); }
+  .action-card:focus-visible { outline: 3px solid #7fb6e6; outline-offset: 2px; }
+
+  .action-card-title { font-weight: 700; color: var(--color-primary-dark); font-size: 0.95rem; }
+  .action-card-sub { font-size: 0.82rem; color: var(--color-muted); }
+
+  .action-card-alert:hover { border-color: var(--color-danger); background: var(--color-danger-light); }
+
+  /* ---------- Forms ---------- */
+  .form-group { margin: 1.1rem 0 0.9rem; text-align: left; }
+  .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; }
+
+  .form-group input[type="date"],
+  .form-group input[type="text"] {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--color-border);
+    background: #fff;
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .form-group input[type="date"]:focus-visible,
+  .form-group input[type="text"]:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+  }
+
+  .form-group input[type="text"]::placeholder { color: var(--color-muted); }
+
+  .checkbox-row {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    font-size: 0.85rem;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    cursor: pointer;
+  }
+
+  .checkbox-row input { margin-top: 0.2rem; flex-shrink: 0; width: 17px; height: 17px; }
+
+  /* ---------- Confirmation ---------- */
+  .success-mark {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--color-accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+  }
+
+  .success-mark svg { width: 28px; height: 28px; }
+
+  .banner {
+    border-radius: var(--radius-md);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.85rem;
+    margin: 1rem 0;
+  }
+
+  .banner-success { background: var(--color-accent-light); color: var(--color-accent); }
+
+  /* ---------- Agent routing ---------- */
+  .sla-box {
+    background: var(--color-primary-light);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin: 1rem 0 1.25rem;
+  }
+
+  .sla-label { font-size: 0.78rem; color: var(--color-muted); }
+  .sla-timer { font-size: 1.6rem; font-weight: 700; color: var(--color-primary-dark); font-variant-numeric: tabular-nums; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--color-primary-dark);
+    color: #fff;
+    padding: 0.7rem 1.1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 50;
+    max-width: 90vw;
+  }
+
+  .toast.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .screen, .otp-group.shake, .toast { animation: none !important; transition: none !important; }
+  }
+
+  @media (min-width: 640px) {
+    .app-shell { padding-top: 2rem; }
+    .card { padding: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <svg class="brand-logo" viewBox="0 0 40 40" aria-hidden="true">
+          <circle cx="20" cy="20" r="20" fill="#0e7c66"/>
+          <text x="20" y="26" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff">LT</text>
+        </svg>
+        <div class="brand-text">
+          <strong>Legacy Trust Bank</strong>
+          <span>Smart Recovery Portal</span>
+        </div>
+      </div>
+      <div class="security-badge">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 10V8a6 6 0 1 1 12 0v2" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+          <rect x="4" y="10" width="16" height="10" rx="2" stroke="#ffffff" stroke-width="2"/>
+        </svg>
+        <span>Secure session &middot; 256-bit encrypted</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-shell" id="app-shell">
+
+    <!-- Screen 1: Landing (US-01) -->
+    <section id="screen-landing" class="screen is-active">
+      <div class="card card-center">
+        <p class="eyebrow">Account Access</p>
+        <h1>Welcome back</h1>
+        <p class="muted">Let's quickly verify it's you so we can securely bring up your account.</p>
+        <div class="form-group">
+          <label for="destination-input">Email or mobile number</label>
+          <input type="text" id="destination-input" placeholder="Email or mobile number" autocomplete="off">
+        </div>
+        <p id="destination-error" class="error-text" role="alert" hidden></p>
+        <button id="btn-send-code" class="btn btn-primary btn-block">Send Security Code</button>
+        <p class="fine-print">By continuing, you confirm this is a private device.</p>
+      </div>
+    </section>
+
+    <!-- Screen 2: Identity Verification / 2FA (US-01, US-02) -->
+    <section id="screen-2fa" class="screen">
+      <div class="card">
+        <p class="eyebrow">Identity Verification</p>
+        <h1>Enter your security code</h1>
+        <p class="muted">We've sent a 6-digit code to <strong id="otp-destination">your registered contact</strong>.</p>
+        <div id="otp-group" class="otp-group" role="group" aria-label="6 digit security code">
+          <input type="text" class="otp-box" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 1">
+          <input type="text" class="otp-box" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 2">
+          <input type="text" class="otp-box" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 3">
+          <input type="text" class="otp-box" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 4">
+          <input type="text" class="otp-box" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 5">
+          <input type="text" class="otp-box" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 6">
+        </div>
+        <div class="otp-meta">
+          <span class="badge badge-neutral" id="attempt-badge">Attempt 0 of 3</span>
+          <span class="timer" aria-live="polite">Code expires in <strong id="otp-timer">10:00</strong></span>
+        </div>
+        <p id="otp-error" class="error-text" role="alert" hidden></p>
+        <p id="otp-expired-msg" class="error-text" hidden>Your code has expired. Please return to the previous screen and request a new one.</p>
+        <button id="btn-verify-code" class="btn btn-primary btn-block">Verify Code</button>
+      </div>
+    </section>
+
+    <!-- Screen 3: Account Summary Dashboard, OP-01 (US-03, US-04, US-07) -->
+    <section id="screen-summary" class="screen">
+      <div class="card">
+        <p class="eyebrow">Account Summary</p>
+        <h1>Hello, John Doe</h1>
+        <p class="muted">Account ending ***88291</p>
+        <div class="stat-grid">
+          <div class="stat">
+            <span class="stat-label">Total Balance</span>
+            <span class="stat-value">&pound;1,250.00</span>
+          </div>
+          <div class="stat stat-danger">
+            <span class="stat-label">Overdue Arrears</span>
+            <span class="stat-value">&pound;450.00</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Current Due Date</span>
+            <span class="stat-value">15 September 2026</span>
+          </div>
+        </div>
+        <details class="accordion">
+          <summary>View itemised charge breakdown</summary>
+          <dl class="breakdown-list">
+            <div class="breakdown-item">
+              <dt>Missed Payments <span class="tooltip" title="Regular payments that were due but not received">&#9432;</span></dt>
+              <dd>&pound;400.00</dd>
+            </div>
+            <div class="breakdown-item">
+              <dt>Accrued Interest <span class="tooltip" title="Interest that has built up on your overdue balance">&#9432;</span></dt>
+              <dd>&pound;30.00</dd>
+            </div>
+            <div class="breakdown-item">
+              <dt>Late Payment Fees <span class="tooltip" title="A fixed fee charged when a payment is missed">&#9432;</span></dt>
+              <dd>&pound;20.00</dd>
+            </div>
+            <div class="breakdown-item total">
+              <dt>Total Overdue Arrears</dt>
+              <dd>&pound;450.00</dd>
+            </div>
+          </dl>
+        </details>
+        <button id="btn-review-options" class="btn btn-primary btn-block">Review Payment Options</button>
+      </div>
+    </section>
+
+    <!-- Screen 4: Choose Next Action (US-05, US-07) -->
+    <section id="screen-actions" class="screen">
+      <div class="card">
+        <p class="eyebrow">Payment Options</p>
+        <h1>How would you like to proceed?</h1>
+        <p class="muted">Choose the option that best matches your situation.</p>
+        <div class="action-cards">
+          <button id="card-p2p" class="action-card">
+            <span class="action-card-title">Set a Repayment Date (Promise to Pay)</span>
+            <span class="action-card-sub">Commit to clearing your overdue balance on a date that works for you</span>
+          </button>
+          <button id="card-payfull" class="action-card">
+            <span class="action-card-title">Pay Overdue Balance in Full Now</span>
+            <span class="action-card-sub">Make an immediate card payment for &pound;450.00</span>
+          </button>
+          <button id="card-hardship" class="action-card action-card-alert">
+            <span class="action-card-title">I'm experiencing financial hardship or dispute this balance</span>
+            <span class="action-card-sub">Speak to a specialist about your circumstances</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen 4b: Pay in full placeholder (Out of Scope for Phase 1) -->
+    <section id="screen-paynow" class="screen">
+      <div class="card card-center">
+        <p class="eyebrow">Card Payment</p>
+        <h1>Live Payment Processing</h1>
+        <p class="muted">Live Payment Processing deferred to Phase 2.</p>
+        <p>This journey has been scoped for a future release. For now, please choose another option from the list.</p>
+        <button id="btn-paynow-back" class="btn btn-secondary btn-block">Back to Options</button>
+      </div>
+    </section>
+
+    <!-- Screen 5: Promise-to-Pay Flow, OP-02 (US-05) -->
+    <section id="screen-p2p" class="screen">
+      <div class="card">
+        <p class="eyebrow">Promise to Pay</p>
+        <h1>Set a repayment date</h1>
+        <span class="badge badge-danger">Overdue balance: &pound;450.00</span>
+        <div class="form-group">
+          <label for="p2p-date">Choose a date within the next 30 days</label>
+          <input type="date" id="p2p-date">
+        </div>
+        <label class="checkbox-row">
+          <input type="checkbox" id="p2p-confirm-checkbox">
+          <span>I understand this is a formal commitment to pay &pound;450.00 on the date selected above, and that my account status will be updated accordingly.</span>
+        </label>
+        <p id="p2p-error" class="error-text" role="alert" hidden></p>
+        <button id="btn-confirm-date" class="btn btn-primary btn-block">Confirm Payment Date</button>
+      </div>
+    </section>
+
+    <!-- Screen 6: Confirmation Page (US-06, US-11) -->
+    <section id="screen-confirmation" class="screen">
+      <div class="card card-center">
+        <div class="success-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="12" fill="#0e7c66"/>
+            <path d="M7 12.5l3 3 7-7" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h1>Payment date confirmed</h1>
+        <p class="muted">Reference <strong>P2P-98421</strong></p>
+        <div class="stat-grid">
+          <div class="stat">
+            <span class="stat-label">Payment Date</span>
+            <span class="stat-value" id="confirm-date-display">&mdash;</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Amount</span>
+            <span class="stat-value">&pound;450.00</span>
+          </div>
+        </div>
+        <p class="banner banner-success">A digital receipt has been sent instantly to your registered mobile and email.</p>
+        <button id="btn-download-pdf" class="btn btn-secondary btn-block">Download Summary PDF</button>
+        <button id="btn-done" class="btn btn-primary btn-block">Done</button>
+      </div>
+    </section>
+
+    <!-- Screen 7: Routed to Agent / Exception Path (US-02, US-07, US-08, US-10) -->
+    <section id="screen-agent" class="screen">
+      <div class="card card-center">
+        <p class="eyebrow">Connecting you with a specialist</p>
+        <h1 id="agent-heading">A specialist is best placed to help with this</h1>
+        <p class="muted" id="agent-body">Thanks for letting us know. One of our team will call you back shortly with your account details already to hand.</p>
+        <div class="sla-box">
+          <span class="sla-label">Estimated callback within</span>
+          <span class="sla-timer" id="sla-timer" aria-live="polite">29:45</span>
+        </div>
+        <button id="btn-return-start" class="btn btn-primary btn-block">Return to Prototype Start</button>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+  (function () {
+    const state = {
+      attempts: 0,
+      maxAttempts: 3,
+      lockoutReason: null
+    };
+    const timers = { otp: null, sla: null };
+
+    const screens = Array.from(document.querySelectorAll('.screen'));
+    function showScreen(id) {
+      screens.forEach((s) => s.classList.toggle('is-active', s.id === id));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ---------- Screen 1: Landing ---------- */
+    const destinationInput = document.getElementById('destination-input');
+
+    function isValidDestination(value) {
+      const trimmed = value.trim();
+      if (!trimmed) return false;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^[+\d][\d\s()-]*$/;
+      const digitCount = (trimmed.match(/\d/g) || []).length;
+      return emailRegex.test(trimmed) || (phoneRegex.test(trimmed) && digitCount >= 7);
+    }
+
+    // masks all but the last 3 digits/local-part-initial, preserving the user's original formatting
+    function maskDestination(value) {
+      const trimmed = value.trim();
+      if (trimmed.includes('@')) {
+        const [local, domain] = trimmed.split('@');
+        const maskedLocal = local.length > 1 ? `${local[0]}***` : '***';
+        return `${maskedLocal}@${domain}`;
+      }
+      const chars = trimmed.split('');
+      const digitIndexes = [];
+      chars.forEach((c, i) => { if (/\d/.test(c)) digitIndexes.push(i); });
+      const maskCount = Math.max(digitIndexes.length - 3, 0);
+      for (let i = 0; i < maskCount; i += 1) chars[digitIndexes[i]] = '*';
+      return chars.join('');
+    }
+
+    function showDestinationError(msg) {
+      const el = document.getElementById('destination-error');
+      el.textContent = msg;
+      el.hidden = false;
+    }
+
+    function hideDestinationError() {
+      document.getElementById('destination-error').hidden = true;
+    }
+
+    document.getElementById('btn-send-code').addEventListener('click', () => {
+      if (!isValidDestination(destinationInput.value)) {
+        showDestinationError('Please enter a valid email address or mobile number.');
+        return;
+      }
+      hideDestinationError();
+      document.getElementById('otp-destination').textContent = maskDestination(destinationInput.value);
+      resetOtp();
+      showScreen('screen-2fa');
+      startOtpTimer();
+    });
+
+    /* ---------- Screen 2: OTP ---------- */
+    const otpInputs = Array.from(document.querySelectorAll('.otp-box'));
+    const otpGroup = document.getElementById('otp-group');
+
+    otpInputs.forEach((input, idx) => {
+      input.addEventListener('input', () => {
+        input.value = input.value.replace(/[^0-9]/g, '').slice(0, 1);
+        if (input.value && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && idx > 0) otpInputs[idx - 1].focus();
+      });
+    });
+
+    function resetOtp() {
+      state.attempts = 0;
+      otpInputs.forEach((i) => (i.value = ''));
+      updateAttemptBadge();
+      hideOtpError();
+      document.getElementById('otp-expired-msg').hidden = true;
+    }
+
+    function updateAttemptBadge() {
+      document.getElementById('attempt-badge').textContent = `Attempt ${state.attempts} of ${state.maxAttempts}`;
+    }
+
+    function startOtpTimer() {
+      clearInterval(timers.otp);
+      let seconds = 600;
+      const el = document.getElementById('otp-timer');
+      renderOtpTimer(el, seconds);
+      timers.otp = setInterval(() => {
+        seconds -= 1;
+        if (seconds <= 0) {
+          seconds = 0;
+          clearInterval(timers.otp);
+          document.getElementById('otp-expired-msg').hidden = false;
+        }
+        renderOtpTimer(el, seconds);
+      }, 1000);
+    }
+
+    function renderOtpTimer(el, seconds) {
+      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      el.textContent = `${m}:${s}`;
+    }
+
+    function showOtpError(msg) {
+      const el = document.getElementById('otp-error');
+      el.textContent = msg;
+      el.hidden = false;
+    }
+
+    function hideOtpError() {
+      document.getElementById('otp-error').hidden = true;
+    }
+
+    function shakeOtp() {
+      otpGroup.classList.remove('shake');
+      void otpGroup.offsetWidth;
+      otpGroup.classList.add('shake');
+      otpInputs.forEach((i) => (i.value = ''));
+      otpInputs[0].focus();
+    }
+
+    document.getElementById('btn-verify-code').addEventListener('click', () => {
+      const code = otpInputs.map((i) => i.value).join('');
+      if (code.length < 6) {
+        showOtpError('Please enter all 6 digits.');
+        return;
+      }
+      if (code === '123456') {
+        clearInterval(timers.otp);
+        hideOtpError();
+        showScreen('screen-summary');
+        return;
+      }
+      state.attempts += 1;
+      updateAttemptBadge();
+      if (state.attempts >= state.maxAttempts) {
+        clearInterval(timers.otp);
+        state.lockoutReason = 'lockout';
+        routeToAgent();
+        return;
+      }
+      showOtpError(`Incorrect code. ${state.maxAttempts - state.attempts} attempt(s) remaining.`);
+      shakeOtp();
+    });
+
+    /* ---------- Screen 3: Account Summary ---------- */
+    document.getElementById('btn-review-options').addEventListener('click', () => showScreen('screen-actions'));
+
+    /* ---------- Screen 4: Choose Next Action ---------- */
+    document.getElementById('card-p2p').addEventListener('click', () => {
+      resetP2p();
+      showScreen('screen-p2p');
+    });
+    document.getElementById('card-payfull').addEventListener('click', () => showScreen('screen-paynow'));
+    document.getElementById('card-hardship').addEventListener('click', () => {
+      state.lockoutReason = 'keyword';
+      routeToAgent();
+    });
+    document.getElementById('btn-paynow-back').addEventListener('click', () => showScreen('screen-actions'));
+
+    /* ---------- Screen 5: Promise to Pay ---------- */
+    const dateInput = document.getElementById('p2p-date');
+    const checkbox = document.getElementById('p2p-confirm-checkbox');
+
+    function toISODate(d) {
+      return d.toISOString().slice(0, 10);
+    }
+
+    function resetP2p() {
+      const today = new Date();
+      const max = new Date();
+      max.setDate(today.getDate() + 30);
+      dateInput.min = toISODate(today);
+      dateInput.max = toISODate(max);
+      dateInput.value = '';
+      checkbox.checked = false;
+      hideP2pError();
+    }
+
+    function showP2pError(msg) {
+      const el = document.getElementById('p2p-error');
+      el.textContent = msg;
+      el.hidden = false;
+    }
+
+    function hideP2pError() {
+      document.getElementById('p2p-error').hidden = true;
+    }
+
+    function formatDate(iso) {
+      const d = new Date(`${iso}T00:00:00`);
+      return d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    document.getElementById('btn-confirm-date').addEventListener('click', () => {
+      const errors = [];
+      if (!dateInput.value) {
+        errors.push('Please select a repayment date.');
+      } else {
+        const selected = new Date(`${dateInput.value}T00:00:00`);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const max = new Date(today);
+        max.setDate(today.getDate() + 30);
+        if (selected < today || selected > max) {
+          errors.push('Please select a date within the next 30 days.');
+        }
+      }
+      if (!checkbox.checked) {
+        errors.push('Please confirm you agree to this payment commitment before continuing.');
+      }
+      if (errors.length) {
+        showP2pError(errors.join(' '));
+        return;
+      }
+      hideP2pError();
+      document.getElementById('confirm-date-display').textContent = formatDate(dateInput.value);
+      showScreen('screen-confirmation');
+    });
+
+    /* ---------- Screen 6: Confirmation ---------- */
+    document.getElementById('btn-download-pdf').addEventListener('click', () => {
+      showToast('Summary PDF downloaded.');
+    });
+    document.getElementById('btn-done').addEventListener('click', () => {
+      resetAll();
+      showScreen('screen-landing');
+    });
+
+    /* ---------- Screen 7: Routed to Agent ---------- */
+    function routeToAgent() {
+      const isLockout = state.lockoutReason === 'lockout';
+      document.getElementById('agent-heading').textContent = isLockout
+        ? 'Your session has been locked for security'
+        : 'A specialist is best placed to help with this';
+      document.getElementById('agent-body').textContent = isLockout
+        ? "For your protection, we've paused self-service access after 3 unsuccessful code attempts. There's no need to try again here \u2014 one of our specialists will call you back shortly to confirm your identity and pick up where you left off."
+        : "Thanks for letting us know. Cases like this deserve a closer look from a trained specialist, so we've paused the automated journey. One of our team will call you back shortly with your account details already to hand.";
+      showScreen('screen-agent');
+      startSlaTimer();
+    }
+
+    function startSlaTimer() {
+      clearInterval(timers.sla);
+      let seconds = 29 * 60 + 45;
+      const el = document.getElementById('sla-timer');
+      renderOtpTimer(el, seconds);
+      timers.sla = setInterval(() => {
+        seconds -= 1;
+        if (seconds <= 0) {
+          seconds = 0;
+          clearInterval(timers.sla);
+        }
+        renderOtpTimer(el, seconds);
+      }, 1000);
+    }
+
+    document.getElementById('btn-return-start').addEventListener('click', () => {
+      clearInterval(timers.sla);
+      resetAll();
+      showScreen('screen-landing');
+    });
+
+    /* ---------- Toast ---------- */
+    let toastTimeout;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('is-visible');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => toast.classList.remove('is-visible'), 3000);
+    }
+
+    /* ---------- Reset ---------- */
+    function resetAll() {
+      clearInterval(timers.otp);
+      clearInterval(timers.sla);
+      state.attempts = 0;
+      state.lockoutReason = null;
+      destinationInput.value = '';
+      hideDestinationError();
+      resetOtp();
+    }
+
+    showScreen('screen-landing');
+  })();
+  </script>
+</body>
+</html>
